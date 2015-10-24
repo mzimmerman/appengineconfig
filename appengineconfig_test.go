@@ -17,4 +17,9 @@ func TestGet(t *testing.T) {
 	if want, got := def, appengineconfig.Get(c, key, changed); want != got {
 		t.Errorf("Expected %s, got %s", want, got)
 	}
+	key, def, value := "template", "template %s", "value"
+	if want, got := "template value", appengineconfig.Get(c, key, def, value); want != got {
+		t.Errorf("Expected %s, got %s", want, got)
+	}
+
 }

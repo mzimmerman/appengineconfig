@@ -1,6 +1,7 @@
 package appengineconfig
 
 import (
+	"fmt"
 	"sync"
 
 	"golang.org/x/net/context"
@@ -21,7 +22,7 @@ func init() {
 	configCache = make(map[string]string)
 }
 
-func Get(c context.Context, key, def string) string {
+func Get(c context.Context, key, def string, values ...interface{}) string {
 	configLock.Lock()
 	defer configLock.Unlock()
 	val, ok := configCache[key]
@@ -38,12 +39,12 @@ func Get(c context.Context, key, def string) string {
 		if err != nil {
 			log.Errorf(c, "Error creating default config for key - %s - error is - %v", key, err)
 		}
-		return def // return default, totally new config setting
+		return fmt.Sprintf(def, values...) // return default, totally new config setting
 	}
 	if err != nil {
 		log.Errorf(c, "Error fetching config for key - %s - error is - %v", key, err)
 		return def // error, return the default
 	}
 	configCache[key] = value.Val
-	return value.Val
+	return fmt.Sprintf(value.Val, values...)
 }
