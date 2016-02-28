@@ -27,7 +27,7 @@ func Get(c context.Context, key, def string, values ...interface{}) string {
 	defer configLock.Unlock()
 	val, ok := configCache[key]
 	if ok {
-		return val
+		return fmt.Sprintf(val, values...)
 	}
 	value := Value{}
 	dskey := datastore.NewKey(c, ConfigName, key, 0, nil)
